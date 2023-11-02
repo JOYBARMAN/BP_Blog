@@ -13,10 +13,9 @@ class BloodGroups(TextChoices):
     O_NEGATIVE = "O-"
 
 
-class UserKind(TextChoices):
-    ADMIN = "ADMIN", "Admin"
+class UserType(TextChoices):
     AUTHOR = "AUTHOR", "Author"
-    SUPER_ADMIN = "SUPER_ADMIN", "Super Admin"
+    VISITOR = "VISITOR", "Visitor"
     UNDEFINED = "UNDEFINED", "Undefined"
 
 
@@ -26,9 +25,3 @@ class UserGender(TextChoices):
     UNKNOWN = "UNKNOWN", "Unknown"
     OTHER = "OTHER", "Other"
 
-
-class UserStatus(TextChoices):
-    ACTIVE = "ACTIVE", "Active"
-    DRAFT = "DRAFT", "Draft"
-    INACTIVE = "INACTIVE", "Inactive"
-    REMOVED = "REMOVED", "Removed"
