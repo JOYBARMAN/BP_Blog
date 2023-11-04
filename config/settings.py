@@ -11,7 +11,7 @@ SECRET_KEY = "django-insecure-sv8uxwdm^olxe6oc)aqk&zu#z-juj*tu%lw0pg#nh4c1nrola5
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ENABLE_SILK = os.environ.get("ENABLE_SILK", False)
+ENABLE_SILK = True
 
 ALLOWED_HOSTS = []
 
