@@ -6,10 +6,19 @@ from core.rest.serializers.users import UserListSerializer
 
 
 class UserList(ListCreateAPIView):
-    """Views for admin add and get users"""
+    """Views to get or create user instance"""
 
     serializer_class = UserListSerializer
     permission_classes = [
         IsAdminUser,
     ]
     queryset = User().get_all_actives()
+
+
+class UserDetail(RetrieveUpdateAPIView):
+    """View to retrieve or update a user instance."""
+
+    serializer_class = UserListSerializer
+    permission_classes = [IsAdminUser]
+    queryset = User().get_all_actives()
+    lookup_field = "uid"
