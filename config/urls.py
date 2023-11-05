@@ -5,10 +5,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
     # user urls
     path("api/v1/users", include("core.rest.urls.base")),
-
+    # profile urls
+    path("api/v1/users/profile", include("user_profile.rest.urls.profile")),
     # silk url
     path("silk/", include("silk.urls", namespace="silk")),
 ]
