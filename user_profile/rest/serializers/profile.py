@@ -7,7 +7,7 @@ from user_profile.models import Profile
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = MeDetailSerializer()
+    user = MeDetailSerializer(read_only=True)
 
     class Meta:
         model = Profile
@@ -35,7 +35,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
             "uid",
-            "user",
             "created_at",
             "updated_at",
         ]

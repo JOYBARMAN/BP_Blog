@@ -14,4 +14,8 @@ class ProfileDetail(RetrieveUpdateAPIView):
     # renderer_classes = [ErrorRenderers]
 
     def get_object(self):
-        return Profile.objects.get(user=self.request.user)
+        return (
+            Profile.objects.filter(user=self.request.user)
+            .select_related("user")
+            .first()
+        )
