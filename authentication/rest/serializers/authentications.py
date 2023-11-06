@@ -1,9 +1,11 @@
 """Serializer for authentication"""
 
+from django.contrib.auth import authenticate
 from rest_framework import serializers
 
 from core.models import User
 from core.utils import is_valid_bd_phone_num
+from authentication.utils import get_tokens_for_user
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -49,4 +51,28 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop("confirm_password", None)
-        return User.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
+        token = get_tokens_for_user(user)
+        return {"msg": "Registration Successful", "token": token}
+
+
+class LoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=255, required=True)
+    password = serializers.CharField(style={"input_type": "password"}, required=True)
+
+    class Meta:
+        model = User
+        fields = ["email", "password"]
+
+    def create(self, validated_data):
+        email = validated_data.get("email")
+        password = validated_data.get("password")
+        user = authenticate(username=email, password=password)
+
+        if user is not None:
+            token = get_tokens_for_user(user)
+            return {"msg": "Login Successful", "token": token}
+        else:
+            raise serializers.ValidationError(
+                {"non_field_errors": "Email or Password is not valid"}
+            )
