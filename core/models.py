@@ -13,14 +13,14 @@ from common.models import BaseModelWithUID
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, username, password=None):
+    def create_user(self, email, username, phone, user_type, password=None):
         """
         Creates and saves a User with the given email, username ,password.
         """
         if not email:
             raise ValueError("Users must have an email address")
 
-        user = self.model(email=self.normalize_email(email), username=username)
+        user = self.model(email=self.normalize_email(email), username=username, phone=phone, user_type=user_type)
 
         user.set_password(password)
         user.save(using=self._db)

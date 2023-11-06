@@ -9,6 +9,8 @@ urlpatterns = [
     path("api/v1/users", include("core.rest.urls.base")),
     # profile urls
     path("api/v1/users/profile", include("user_profile.rest.urls.profile")),
+    # authentication urls
+    path("api/v1/auth/", include("authentication.rest.urls.authentications")),
     # silk url
     path("silk/", include("silk.urls", namespace="silk")),
 ]
