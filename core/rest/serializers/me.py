@@ -8,10 +8,10 @@ from core.utils import is_valid_bd_phone_num
 
 class MeDetailSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
-        style={"input_type": "password"}, write_only=True, required=True
+        style={"input_type": "password"}, write_only=True, min_length=8, required=True
     )
     confirm_password = serializers.CharField(
-        style={"input_type": "password"}, write_only=True, required=True
+        style={"input_type": "password"}, write_only=True, min_length=8, required=True
     )
 
     class Meta:
@@ -49,11 +49,6 @@ class MeDetailSerializer(serializers.ModelSerializer):
 
     def validate_password(self, value):
         confirm_password = self.initial_data.get("confirm_password", "")
-
-        if len(value) < 8:
-            raise serializers.ValidationError(
-                "Password must be at least 8 characters long."
-            )
 
         if value != confirm_password:
             raise serializers.ValidationError(
