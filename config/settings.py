@@ -31,6 +31,8 @@ PROJECT_APPS = [
     "common.apps.CommonConfig",
     "user_profile.apps.UserProfileConfig",
     "authentication.apps.AuthenticationConfig",
+    "category.apps.CategoryConfig",
+    "sub_category.apps.SubCategoryConfig",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
