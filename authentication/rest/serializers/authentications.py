@@ -62,7 +62,7 @@ class LoginSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         email = validated_data.get("email")
         password = validated_data.get("password")
-        user = authenticate(username=email, password=password)
+        user = authenticate(email=email, password=password)
 
         if user is not None:
             token = get_tokens_for_user(user)

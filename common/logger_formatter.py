@@ -1,3 +1,5 @@
+"""Crete custom color formatter for logger"""
+
 from colorlog.formatter import ColoredFormatter
 
 
