@@ -92,6 +92,13 @@ class User(AbstractBaseUser, BaseModelWithUID):
         # Simplest possible answer: Yes, always
         return True
 
+    def is_activated(self):
+        # Check user is activated by otp
+        try:
+            return self.userotp.is_activated
+        except UserOtp.DoesNotExist:
+            return False
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"
@@ -102,11 +109,7 @@ class User(AbstractBaseUser, BaseModelWithUID):
 class UserOtp(BaseModelWithUID):
     """Otp model for user otp verifations"""
 
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        db_index=True
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
     otp_type = models.CharField(
         max_length=20,
         choices=OtpType.choices,
