@@ -15,7 +15,8 @@ class ProfileDetail(RetrieveUpdateAPIView):
 
     def get_object(self):
         return (
-            Profile.objects.filter(user=self.request.user)
+            Profile()
+            .get_all_actives()
             .select_related("user")
-            .first()
+            .get(user=self.request.user)
         )

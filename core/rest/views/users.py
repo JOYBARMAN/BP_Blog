@@ -12,7 +12,7 @@ class UserList(ListCreateAPIView):
     permission_classes = [
         IsAdminUser,
     ]
-    queryset = User().get_all_actives()
+    queryset = User().get_all_actives().select_related("userotp").all()
 
 
 class UserDetail(RetrieveUpdateAPIView):

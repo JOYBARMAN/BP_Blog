@@ -30,11 +30,13 @@ class UserListSerializer(UserBaseSerializer):
     confirm_password = serializers.CharField(
         style={"input_type": "password"}, write_only=True, min_length=8, required=True
     )
+    is_activated = serializers.BooleanField(read_only=True)
 
     class Meta(UserBaseSerializer.Meta):
         fields = UserBaseSerializer.Meta.fields + [
             "password",
             "confirm_password",
+            "is_activated",
             "created_at",
             "updated_at",
         ]
