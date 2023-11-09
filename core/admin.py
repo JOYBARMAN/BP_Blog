@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+from .models import User, UserOtp
 
 
 class UserModelAdmin(BaseUserAdmin):
@@ -39,3 +40,20 @@ class UserModelAdmin(BaseUserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserModelAdmin)
+
+
+# User otp model admin site
+@admin.register(UserOtp)
+class UserOtpAdmin(admin.ModelAdmin):
+    list_display = (
+        "user_name",
+        "otp_type",
+        "otp",
+        "is_activated",
+    )
+    search_fields = ("user__username",)
+
+    def user_name(self, obj):
+        return obj.user.username
+
+    user_name.short_description = "Username"  # Set a custom column header

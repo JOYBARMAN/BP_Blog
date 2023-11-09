@@ -1,6 +1,6 @@
 """Some utils function of core app"""
 
-import re
+import re, random
 
 
 def is_valid_bd_phone_num(phone):
@@ -9,3 +9,7 @@ def is_valid_bd_phone_num(phone):
 
     # Use the re.match() function to check if the phone number matches the pattern
     return bool(re.match(pattern, phone))
+
+
+def generate_otp():
+    return random.randint(100000, 999999)
