@@ -3,10 +3,17 @@
 from rest_framework import serializers
 
 from category.models import Category
+from sub_category.models import SubCategory
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ["id", "uid", "name"]
 
 
 class CategoryListSerializer(serializers.ModelSerializer):
-    sub_categories = serializers.SerializerMethodField()
+    sub_categories = SubCategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
@@ -27,9 +34,6 @@ class CategoryListSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-
-    def get_sub_categories(self, obj):
-        return obj.sub_categories
 
     def create(self, validated_data):
         return Category.objects.create(**validated_data)

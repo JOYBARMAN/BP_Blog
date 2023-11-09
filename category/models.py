@@ -2,8 +2,6 @@ from django.db import models
 
 from common.models import BaseModelWithUID
 
-# from sub_category.models import SubCategory
-
 from versatileimagefield.fields import VersatileImageField
 
 
@@ -17,6 +15,7 @@ class Category(BaseModelWithUID):
     def __str__(self):
         return self.name
 
-    @property
-    def sub_categories(self):
-        return [subcategory.name for subcategory in self.category.all()]
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
