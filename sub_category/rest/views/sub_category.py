@@ -15,7 +15,7 @@ from core.permissions import (
 
 
 class SubCategoryList(ListCreateAPIView):
-    queryset = SubCategory().get_all_actives()
+    queryset = SubCategory().get_all_actives().select_related("category")
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -31,7 +31,7 @@ class SubCategoryList(ListCreateAPIView):
 
 
 class SubCategoryDetail(RetrieveUpdateAPIView):
-    queryset = SubCategory().get_all_actives()
+    queryset = SubCategoryList.queryset
     lookup_field = "uid"
 
     def get_serializer_class(self):

@@ -3,6 +3,13 @@
 from rest_framework import serializers
 
 from sub_category.models import SubCategory
+from category.models import Category
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "uid", "name"]
 
 
 class SubCategoryBaseSerializer(serializers.ModelSerializer):
@@ -23,7 +30,7 @@ class SubCategoryBaseSerializer(serializers.ModelSerializer):
 
 
 class SubCategoryListSerializer(SubCategoryBaseSerializer):
-    category = serializers.CharField(source="category.name")
+    category = CategorySerializer(read_only=True)
 
     class Meta(SubCategoryBaseSerializer.Meta):
         fields = SubCategoryBaseSerializer.Meta.fields + [
