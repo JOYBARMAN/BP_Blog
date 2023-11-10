@@ -106,6 +106,15 @@ DATABASES = {
 #     )
 # }
 
+# Email configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS")
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -185,22 +194,22 @@ CORS_ALLOWED_ORIGINS = [
 
 # Configure custom log formatter with colors
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'special': {
-            '()': 'common.logger_formatter.CustomFormatter',
-            'format': '%(log_color)s[%(asctime)s] %(message)s'
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "special": {
+            "()": "common.logger_formatter.CustomFormatter",
+            "format": "%(log_color)s[%(asctime)s] %(message)s",
         }
     },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'special',
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "special",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
     },
 }

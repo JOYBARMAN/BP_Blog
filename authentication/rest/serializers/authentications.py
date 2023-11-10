@@ -4,7 +4,8 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 
 from core.models import User
-from core.utils import is_valid_bd_phone_num
+from core.choices import OtpType
+from core.utils import is_valid_bd_phone_num, send_otp_to_user
 from authentication.utils import get_tokens_for_user
 
 
@@ -48,7 +49,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         validated_data.pop("confirm_password", None)
         user = User.objects.create_user(**validated_data)
         token = get_tokens_for_user(user)
-        return {"msg": "Registration Successful", "token": token}
+        send_otp_to_user(user=user, otp_type=OtpType.REGISTRATION)
+        return {
+            "message": "Registration Successful. OTP send to your mail please activate your account.",
+            "token": token,
+        }
 
 
 class LoginSerializer(serializers.ModelSerializer):

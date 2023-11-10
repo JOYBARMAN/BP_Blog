@@ -1,8 +1,15 @@
 """Some utils function of core app"""
 
-import re, random
+import re, random, os, logging
+
+from django.core.mail import EmailMessage
+
+from core.models import UserOtp
+
+logger = logging.getLogger(__name__)
 
 
+# Check phone number is valid or not
 def is_valid_bd_phone_num(phone):
     # Define a regular expression pattern for a valid Bangladeshi phone number
     pattern = r"^\+?(88)?01[3-9]\d{8}$"
@@ -11,5 +18,36 @@ def is_valid_bd_phone_num(phone):
     return bool(re.match(pattern, phone))
 
 
+# Generate otp for otp verificatio
 def generate_otp():
     return random.randint(100000, 999999)
+
+
+# Function for send mail
+def send_email(to_email, otp):
+    subject = "OTP Verification for SocialMediaApp Account"
+    body = f"Hello,\n\nYour OTP (One-Time Password) for account verification is: {otp}\n\nThank you for using SocialMediaApp."
+    email = EmailMessage(
+        subject=subject,
+        body=body,
+        from_email=os.environ.get("EMAIL_FROM"),
+        to=[to_email],
+    )
+    try:
+        email.send()
+        logger.info("Email sent successfully")
+    except Exception as e:
+        logger.error(f"An error occurred while sending the email: {e}")
+
+
+# Function for send otp to user
+def send_otp_to_user(user, otp_type):
+    user_otp = UserOtp.objects.get(user=user)
+
+    # Generate and save OTP
+    user_otp.otp = generate_otp()
+    user_otp.otp_type = otp_type
+    user_otp.save()
+
+    # Send OTP via email
+    send_email(to_email=user_otp.user.email, otp=user_otp.otp)
