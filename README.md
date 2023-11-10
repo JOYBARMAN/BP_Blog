@@ -24,36 +24,25 @@ Welcome to Social_Media_App where connecting, sharing, and thriving converge! Ou
 
 Install Dependencies:
 
-##Backend
-bash
-make virtual environment name env command: python -m venv env
-then install requirements command : pip install -r requirements/development.txt
-then run server in localhost : python manage.py runserver
+### Backend
 
-##Frontend
+```bash
+# Create a virtual environment
+python -m venv env
+
+# Install backend requirements
+pip install -r requirements/development.txt
+
+# Run the server locally
+python manage.py runserver
+
+### Frontend
+
+# Install frontend dependencies
 npm install
-Run the App:
+
+# Run the app
 npm start
-
-Contribute:
-
-Check out our Contribution Guidelines to get involved.
-Tech Stack
-Frontend: [List your frontend technologies]
-Backend: [List your backend technologies]
-Database: [List your database technologies]
-Documentation
-Explore our comprehensive Documentation to understand the architecture, API endpoints, and contribution workflow.
-
-Community
-Join our vibrant community! Connect with fellow developers, share ideas, and stay updated on the latest developments.
-
-Community Forum
-Slack Channel
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-Social_Media_App – Where Connections Flourish, and Stories Unfold.
 
 
 
