@@ -17,5 +17,43 @@ Welcome to Social_Media_App where connecting, sharing, and thriving converge! Ou
 
 ## Getting Started
 
-To start exploring and contributing to Social_Media_App, follow these steps:
+1. **Clone the Repository:**
+   ```bash
+   git clone git@github.com:JOYBARMAN/Social_Media_App.git
+
+
+Install Dependencies:
+
+##Backend
+bash
+make virtual environment name env command: python -m venv env
+then install requirements command : pip install -r requirements/development.txt
+then run server in localhost : python manage.py runserver
+
+##Frontend
+npm install
+Run the App:
+npm start
+
+Contribute:
+
+Check out our Contribution Guidelines to get involved.
+Tech Stack
+Frontend: [List your frontend technologies]
+Backend: [List your backend technologies]
+Database: [List your database technologies]
+Documentation
+Explore our comprehensive Documentation to understand the architecture, API endpoints, and contribution workflow.
+
+Community
+Join our vibrant community! Connect with fellow developers, share ideas, and stay updated on the latest developments.
+
+Community Forum
+Slack Channel
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+Social_Media_App – Where Connections Flourish, and Stories Unfold.
+
+
 
