@@ -1,12 +1,17 @@
 """Serializer for authentication"""
 
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from rest_framework import serializers
 
 from core.models import User, UserOtp
 from core.choices import OtpType
-from core.utils import is_valid_bd_phone_num, send_otp_to_user
+from core.utils import (
+    is_valid_bd_phone_num,
+    send_otp_to_user,
+    send_email_for_password_reset,
+)
 from authentication.utils import get_tokens_for_user
 from .validators import SixDigitOTPValidator
 
@@ -147,3 +152,30 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return {"message": "Your password has been changed successfully."}
+
+
+class PasswordResetMailSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=255, required=True)
+
+    class Meta:
+        fields = ["email"]
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value)
+            return {"email": value, "user": user}
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this email does not exist")
+
+    def create(self, validated_data):
+        email = validated_data["email"]["email"]
+        user = validated_data["email"]["user"]
+        token = PasswordResetTokenGenerator().make_token(user)
+        link = f"http://localhost:8000/api/v1/auth/password-reset/{user.uid}/{token}"
+
+        # send email for password reset
+        send_email_for_password_reset(to_email=email, link=link)
+
+        return {
+            "message": "Password reset link has been sent to your email. Please check it"
+        }
