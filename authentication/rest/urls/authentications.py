@@ -8,6 +8,7 @@ from authentication.rest.views.authentications import (
     ActiveAccountView,
     ChangePasswordView,
     PasswordResetMailView,
+    PasswordResetView,
 )
 
 urlpatterns = [
@@ -19,5 +20,10 @@ urlpatterns = [
         "password-reset-mail",
         PasswordResetMailView.as_view(),
         name="password-reset-mail",
+    ),
+    path(
+        "password-reset/<uid>/<token>",
+        PasswordResetView.as_view(),
+        name="password-reset",
     ),
 ]

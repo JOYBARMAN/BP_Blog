@@ -10,6 +10,7 @@ from authentication.rest.serializers.authentications import (
     ActivateAccountSerializer,
     ChangePasswordSerializer,
     PasswordResetMailSerializer,
+    PasswordResetSerializer,
 )
 
 
@@ -62,6 +63,20 @@ class PasswordResetMailView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response_data = serializer.save()
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class PasswordResetView(CreateAPIView):
+    serializer_class = PasswordResetSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data=request.data,
+            context={"uid": kwargs.get("uid"), "token": kwargs.get("token")},
+        )
         serializer.is_valid(raise_exception=True)
         response_data = serializer.save()
 

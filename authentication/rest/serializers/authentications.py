@@ -179,3 +179,43 @@ class PasswordResetMailSerializer(serializers.Serializer):
         return {
             "message": "Password reset link has been sent to your email. Please check it"
         }
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    new_password = serializers.CharField(
+        style={"input_type": "password"}, min_length=8, required=True
+    )
+    confirm_password = serializers.CharField(
+        style={"input_type": "password"}, required=True
+    )
+
+    class Meta:
+        fields = [
+            "new_password",
+            "confirm_password",
+        ]
+
+    def validate_new_password(self, value):
+        confirm_password = self.initial_data.get("confirm_password", "")
+
+        if value != confirm_password:
+            raise serializers.ValidationError(
+                "new password and confirm password do not match."
+            )
+
+        return value
+
+    def create(self, validated_data):
+        password = validated_data.get("new_password")
+        uid = self.context.get("uid")
+        token = self.context.get("token")
+        user = User.objects.get(uid=uid)
+
+        # Check user token is valid or not
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            raise serializers.ValidationError("token is not valid or expired")
+
+        user.set_password(password)
+        user.save()
+
+        return {"message": "Your password has been changed successfully."}
