@@ -1,9 +1,11 @@
 """Serializer for authentication"""
 
 from django.contrib.auth import authenticate
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 from rest_framework import serializers
 
-from core.models import User
+from core.models import User, UserOtp
 from core.choices import OtpType
 from core.utils import is_valid_bd_phone_num, send_otp_to_user
 from authentication.utils import get_tokens_for_user
@@ -76,3 +78,25 @@ class LoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"non_field_errors": "Email or Password is not valid"}
             )
+
+
+class ActivateAccountSerializer(serializers.ModelSerializer):
+    otp = serializers.IntegerField()
+
+    class Meta:
+        model = UserOtp
+        fields = ["otp"]
+
+    def create(self, validated_data):
+        request = self.context["request"]
+        user_otp = UserOtp.objects.get(user=request.user)
+
+        if validated_data["otp"] != user_otp.otp:
+            raise serializers.ValidationError({"otp": "Invalid OTP."})
+        elif user_otp.is_expired():
+            raise serializers.ValidationError({"otp": "OTP Expired."})
+        else:
+            user_otp.is_activated = True
+            user_otp.save()
+
+            return {"message": "Your account has been successfully activated."}
