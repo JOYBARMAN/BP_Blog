@@ -1,7 +1,6 @@
 """Serializer for authentication"""
 
 from django.contrib.auth import authenticate
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 from rest_framework import serializers
 
@@ -9,6 +8,7 @@ from core.models import User, UserOtp
 from core.choices import OtpType
 from core.utils import is_valid_bd_phone_num, send_otp_to_user
 from authentication.utils import get_tokens_for_user
+from .validators import SixDigitOTPValidator
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -81,7 +81,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class ActivateAccountSerializer(serializers.ModelSerializer):
-    otp = serializers.IntegerField()
+    otp = serializers.IntegerField(validators=[SixDigitOTPValidator()])
 
     class Meta:
         model = UserOtp
@@ -89,7 +89,7 @@ class ActivateAccountSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context["request"]
-        user_otp = UserOtp.objects.get(user=request.user)
+        user_otp = self.Meta.model.objects.get(user=request.user)
 
         if validated_data["otp"] != user_otp.otp:
             raise serializers.ValidationError({"otp": "Invalid OTP."})
@@ -100,3 +100,50 @@ class ActivateAccountSerializer(serializers.ModelSerializer):
             user_otp.save()
 
             return {"message": "Your account has been successfully activated."}
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(
+        style={"input_type": "password"}, required=True
+    )
+    new_password = serializers.CharField(
+        style={"input_type": "password"}, min_length=8, required=True
+    )
+    confirm_password = serializers.CharField(
+        style={"input_type": "password"}, required=True
+    )
+
+    class Meta:
+        fields = [
+            "old_password",
+            "new_password",
+            "confirm_password",
+        ]
+
+    def validate_old_password(self, value):
+        user = self.context["request"].user
+
+        if not user.check_password(value):
+            raise serializers.ValidationError("Incorrect old password")
+
+        return value
+
+    def validate_new_password(self, value):
+        confirm_password = self.initial_data.get("confirm_password", "")
+
+        if value != confirm_password:
+            raise serializers.ValidationError(
+                "new password and confirm password do not match."
+            )
+
+        return value
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        new_password = validated_data.get("new_password")
+
+        # Use set_password to update and hash the new password
+        user.set_password(new_password)
+        user.save()
+
+        return {"message": "Your password has been changed successfully."}
