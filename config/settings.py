@@ -35,6 +35,7 @@ PROJECT_APPS = [
     "authentication.apps.AuthenticationConfig",
     "category.apps.CategoryConfig",
     "sub_category.apps.SubCategoryConfig",
+    "post.apps.PostConfig",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
@@ -42,6 +43,7 @@ THIRD_PARTY_APPS = [
     "versatileimagefield",
     "django_filters",
     "corsheaders",
+    "ckeditor",
 ]
 
 if ENABLE_SILK:
@@ -136,6 +138,16 @@ TIME_ZONE = "Asia/Dhaka"
 USE_I18N = True
 
 USE_TZ = True
+
+# CKEditor settings
+CKEDITOR_UPLOAD_PATH = "ckeditor/"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': 800,
+    },
+}
 
 
 # Static files (CSS, JavaScript, Images)
