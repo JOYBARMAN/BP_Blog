@@ -15,6 +15,8 @@ urlpatterns = [
     path("api/v1/category", include("category.rest.urls.category")),
     # subcategory urls
     path("api/v1/subcategory", include("sub_category.rest.urls.sub_category")),
+    # post urls
+    path("api/v1/posts", include("post.rest.urls.posts")),
     # silk url
     path("silk/", include("silk.urls", namespace="silk")),
 ]
