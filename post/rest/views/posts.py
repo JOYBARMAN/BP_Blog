@@ -24,6 +24,8 @@ from core.permissions import (
 
 
 class AdminPostList(ListAPIView):
+    """Views for admin to see all posts"""
+
     serializer_class = PostListSerializer
     permission_classes = [
         IsAdminUser,
@@ -34,3 +36,13 @@ class AdminPostList(ListAPIView):
             Prefetch("category", queryset=Category().get_all_actives()),
             Prefetch("sub_category", queryset=SubCategory().get_all_actives()),
         )
+
+
+class UserPostList(ListAPIView):
+    """Views for user to see user posts"""
+
+    serializer_class = PostListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return AdminPostList().get_queryset().filter(user=self.request.user)
