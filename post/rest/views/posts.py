@@ -7,6 +7,7 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,
     ListAPIView,
     CreateAPIView,
+    RetrieveAPIView,
 )
 
 from post.models import Post
@@ -55,3 +56,14 @@ class UserPostCreate(CreateAPIView):
     queryset = Post().get_all_actives()
     serializer_class = PostAddSerializer
     permission_classes = [IsAuthenticated]
+
+
+class UserPostDetail(RetrieveAPIView):
+    """Views for get detail of post"""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostDetailSerializer
+    lookup_field = "uid"
+
+    def get_object(self):
+        return AdminPostList().get_queryset().get(uid=self.kwargs.get("uid"))

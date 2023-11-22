@@ -68,6 +68,9 @@ class PostAddSerializer(PostBaseSerializer):
 
 
 class PostDetailSerializer(PostBaseSerializer):
+    category = CategorySerializer(many=True)
+    sub_category = SubCategorySerializer(many=True)
+
     class Meta(PostBaseSerializer.Meta):
         fields = PostBaseSerializer.Meta.fields + [
             "created_at",
