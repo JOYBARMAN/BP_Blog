@@ -8,6 +8,7 @@ from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
     RetrieveAPIView,
+    UpdateAPIView,
 )
 
 from post.models import Post
@@ -63,6 +64,17 @@ class UserPostDetail(RetrieveAPIView):
 
     permission_classes = [IsAuthenticated]
     serializer_class = PostDetailSerializer
+    lookup_field = "uid"
+
+    def get_object(self):
+        return AdminPostList().get_queryset().get(uid=self.kwargs.get("uid"))
+
+
+class UserPostUpdate(UpdateAPIView):
+    """Views for user to update posts"""
+
+    serializer_class = PostAddSerializer
+    permission_classes = [IsAuthenticated]
     lookup_field = "uid"
 
     def get_object(self):
