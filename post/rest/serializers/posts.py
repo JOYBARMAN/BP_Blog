@@ -48,7 +48,23 @@ class PostListSerializer(PostBaseSerializer):
 class PostAddSerializer(PostBaseSerializer):
     class Meta(PostBaseSerializer.Meta):
         fields = PostBaseSerializer.Meta.fields + []
-        read_only_fields = PostBaseSerializer.Meta.read_only_fields + []
+        read_only_fields = PostBaseSerializer.Meta.read_only_fields + ["user"]
+
+    def create(self, validated_data):
+        # Extract category and sub-category data from validated_data
+        categories_data = validated_data.pop("category", [])
+        sub_categories_data = validated_data.pop("sub_category", [])
+
+        # Create the Post instance with the authenticated user
+        post_instance = Post.objects.create(
+            user=self.context["request"].user, **validated_data
+        )
+
+        # Set the categories and sub-categories for the created post_instance
+        post_instance.category.set(categories_data)
+        post_instance.sub_category.set(sub_categories_data)
+
+        return post_instance
 
 
 class PostDetailSerializer(PostBaseSerializer):

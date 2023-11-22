@@ -6,6 +6,7 @@ from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateAPIView,
     ListAPIView,
+    CreateAPIView,
 )
 
 from post.models import Post
@@ -46,3 +47,11 @@ class UserPostList(ListAPIView):
 
     def get_queryset(self):
         return AdminPostList().get_queryset().filter(user=self.request.user)
+
+
+class UserPostCreate(CreateAPIView):
+    """Views for user to create posts"""
+
+    queryset = Post().get_all_actives()
+    serializer_class = PostAddSerializer
+    permission_classes = [IsAuthenticated]
