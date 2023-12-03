@@ -10,6 +10,8 @@ from rest_framework.generics import (
     RetrieveAPIView,
     UpdateAPIView,
 )
+from rest_framework.response import Response
+from rest_framework import status
 
 from post.models import Post, PostImages
 from category.models import Category
@@ -18,6 +20,8 @@ from post.rest.serializers.posts import (
     PostListSerializer,
     PostAddSerializer,
     PostDetailSerializer,
+    PostImagesSerializer,
+    PostImageAddSerializer,
 )
 from core.permissions import (
     IsAuthenticated,
@@ -83,3 +87,27 @@ class UserPostUpdate(UpdateAPIView):
 
     def get_object(self):
         return AdminPostList().get_queryset().get(uid=self.kwargs.get("uid"))
+
+
+class UserPostImagesList(ListCreateAPIView):
+    """Views for list and add images in a post"""
+
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return PostImagesSerializer
+        else:
+            return PostImageAddSerializer
+
+    def get_queryset(self):
+        return PostImages().get_all_actives().filter(post__uid=self.kwargs.get("uid"))
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data=request.data, context={"uid": kwargs.get("uid")}
+        )
+        serializer.is_valid(raise_exception=True)
+        response_data = serializer.save()
+
+        return Response(response_data, status=status.HTTP_201_CREATED)

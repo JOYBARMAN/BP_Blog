@@ -5,6 +5,7 @@ from post.rest.views.posts import (
     UserPostCreate,
     UserPostDetail,
     UserPostUpdate,
+    UserPostImagesList,
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path("/add", UserPostCreate.as_view(), name="user-post-create"),
     path("/<uuid:uid>", UserPostDetail.as_view(), name="user-post-details"),
     path("/<uuid:uid>/update", UserPostUpdate.as_view(), name="user-post-update"),
+    path("/<uuid:uid>/images", UserPostImagesList.as_view(), name="user-post-images"),
 ]

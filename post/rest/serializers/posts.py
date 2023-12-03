@@ -22,6 +22,38 @@ class PostImagesSerializer(serializers.ModelSerializer):
         fields = ["id", "uid", "image"]
 
 
+class PostImageAddSerializer(serializers.ModelSerializer):
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=None, allow_empty_file=False),
+        write_only=True,
+    )
+
+    class Meta:
+        model = PostImages
+        fields = ["uploaded_images"]
+
+    def create(self, validated_data):
+        # Extract uploaded images data from validated_data
+        uploaded_images = validated_data.pop("uploaded_images", [])
+
+        # Ectract uid from context and get post
+        uid = self.context.get("uid")
+        post = Post.objects.get(uid=uid)
+
+        # Create PostImages instance with post_instance and uploaded images
+        post_images = [PostImages(post=post, image=image) for image in uploaded_images]
+
+        # Bulk insert all related objects at once
+        created_instances = PostImages.objects.bulk_create(post_images)
+
+        # Serialize the created instances
+        serializer = PostImagesSerializer(created_instances, many=True)
+        serialized_data = serializer.data
+
+        # Return the serialized data
+        return serialized_data
+
+
 class PostBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
