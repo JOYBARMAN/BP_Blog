@@ -53,21 +53,34 @@ class PostListSerializer(PostBaseSerializer):
 
 
 class PostAddSerializer(PostBaseSerializer):
-    uploaded_images = serializers.ListField(required=False, write_only=True)
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=None, allow_empty_file=False),
+        required=False,
+        write_only=True,
+    )
 
     class Meta(PostBaseSerializer.Meta):
         fields = PostBaseSerializer.Meta.fields + ["uploaded_images"]
         read_only_fields = PostBaseSerializer.Meta.read_only_fields + ["user"]
 
     def create(self, validated_data):
-        # Extract category and sub-category data from validated_data
+        # Extract category , sub-category and uploaded images data from validated_data
         categories_data = validated_data.pop("category", [])
         sub_categories_data = validated_data.pop("sub_category", [])
+        uploaded_images = validated_data.pop("uploaded_images", [])
 
         # Create the Post instance with the authenticated user
         post_instance = Post.objects.create(
             user=self.context["request"].user, **validated_data
         )
+
+        # Create PostImages instance with post_instance and uploaded images
+        post_images = [
+            PostImages(post=post_instance, image=image) for image in uploaded_images
+        ]
+
+        # Bulk insert all related objects at once
+        PostImages.objects.bulk_create(post_images)
 
         # Set the categories and sub-categories for the created post_instance
         post_instance.category.set(categories_data)
