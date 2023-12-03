@@ -11,7 +11,7 @@ from rest_framework.generics import (
     UpdateAPIView,
 )
 
-from post.models import Post
+from post.models import Post, PostImages
 from category.models import Category
 from sub_category.models import SubCategory
 from post.rest.serializers.posts import (
@@ -38,6 +38,10 @@ class AdminPostList(ListAPIView):
         return Post.objects.select_related("user").prefetch_related(
             Prefetch("category", queryset=Category().get_all_actives()),
             Prefetch("sub_category", queryset=SubCategory().get_all_actives()),
+            Prefetch(
+                "images",
+                queryset=PostImages().get_all_actives(),
+            ),
         )
 
 

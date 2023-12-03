@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from post.models import Post
+from post.models import Post, PostImages
 from category.models import Category
 from sub_category.models import SubCategory
 from category.rest.serializers.category import SubCategorySerializer
@@ -14,6 +14,12 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ["id", "uid", "name"]
+
+
+class PostImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImages
+        fields = ["id", "uid", "image"]
 
 
 class PostBaseSerializer(serializers.ModelSerializer):
@@ -39,15 +45,18 @@ class PostBaseSerializer(serializers.ModelSerializer):
 class PostListSerializer(PostBaseSerializer):
     category = CategorySerializer(many=True)
     sub_category = SubCategorySerializer(many=True)
+    images = PostImagesSerializer(many=True)
 
     class Meta(PostBaseSerializer.Meta):
-        fields = PostBaseSerializer.Meta.fields + []
+        fields = PostBaseSerializer.Meta.fields + ["images"]
         read_only_fields = PostBaseSerializer.Meta.read_only_fields + []
 
 
 class PostAddSerializer(PostBaseSerializer):
+    uploaded_images = serializers.ListField(required=False, write_only=True)
+
     class Meta(PostBaseSerializer.Meta):
-        fields = PostBaseSerializer.Meta.fields + []
+        fields = PostBaseSerializer.Meta.fields + ["uploaded_images"]
         read_only_fields = PostBaseSerializer.Meta.read_only_fields + ["user"]
 
     def create(self, validated_data):
@@ -70,9 +79,11 @@ class PostAddSerializer(PostBaseSerializer):
 class PostDetailSerializer(PostBaseSerializer):
     category = CategorySerializer(many=True)
     sub_category = SubCategorySerializer(many=True)
+    images = PostImagesSerializer(many=True)
 
     class Meta(PostBaseSerializer.Meta):
         fields = PostBaseSerializer.Meta.fields + [
+            "images",
             "created_at",
             "updated_at",
         ]
