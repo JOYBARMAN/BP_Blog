@@ -36,6 +36,7 @@ PROJECT_APPS = [
     "category.apps.CategoryConfig",
     "sub_category.apps.SubCategoryConfig",
     "post.apps.PostConfig",
+    "post_reaction.apps.PostReactionConfig",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
@@ -102,11 +103,11 @@ DATABASES = {
 
 
 # JWT configuration
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
-}
+# REST_FRAMEWORK = {
+#     "DEFAULT_AUTHENTICATION_CLASSES": (
+#         "rest_framework_simplejwt.authentication.JWTAuthentication",
+#     )
+# }
 
 
 # Password validation
