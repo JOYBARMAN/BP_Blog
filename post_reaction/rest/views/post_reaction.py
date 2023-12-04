@@ -1,6 +1,6 @@
 """"Views for post reaction"""
 
-from django.db.models import Count
+from django.db.models import Count, F
 
 from rest_framework.generics import (
     ListCreateAPIView,
@@ -32,16 +32,20 @@ class PostReactionCount(RetrieveAPIView):
 
     def get_object(self):
         queryset = self.get_queryset()
-        reactions_count = queryset.values("reaction_type").annotate(count=Count("id"))
+
+        # Use annotate to get the user list and count in a single query
+        reactions_data = queryset.values("reaction_type").annotate(
+            count=Count("id"),
+            user_list=F("user__username"),
+        )
+
         result = {}
 
-        for item in reactions_count:
+        for item in reactions_data:
             reaction_type = item["reaction_type"].lower()
-            user_list = queryset.filter(
-                reaction_type=item["reaction_type"]
-            ).values_list("user__username", flat=True)
+            user_list = [item["user_list"]] if item["user_list"] else []
 
-            result[reaction_type] = {"count": item["count"], "user": list(user_list)}
+            result[reaction_type] = {"count": item["count"], "user": user_list}
 
         # Ensure that each reaction type has a dictionary, even if it's empty
         for reaction_type in ReactionChoices.values:
