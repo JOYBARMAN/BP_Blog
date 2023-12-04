@@ -16,7 +16,10 @@ from rest_framework import status
 
 from post_reaction.models import PostReaction
 from post_reaction.choices import ReactionChoices
-from post_reaction.rest.serializers.post_reaction import PostReactionCountSerializer
+from post_reaction.rest.serializers.post_reaction import (
+    PostReactionCountSerializer,
+    PostReactionSerializer,
+)
 from core.permissions import (
     IsAuthenticated,
     IsAdminUser,
@@ -57,3 +60,13 @@ class PostReactionCount(RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_object())
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PostReactionCreate(CreateAPIView):
+    serializer_class = PostReactionSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response_data = serializer.save()
+        return Response(response_data, status=status.HTTP_200_OK)
