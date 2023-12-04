@@ -31,12 +31,24 @@ class PostReactionCount(RetrieveAPIView):
         return PostReaction.objects.filter(post__uid=self.kwargs["uid"])
 
     def get_object(self):
-        reactions_count = (
-            self.get_queryset().values("reaction_type").annotate(count=Count("id"))
-        )
-        return {
-            item["reaction_type"].lower(): item["count"] for item in reactions_count
-        }
+        queryset = self.get_queryset()
+        reactions_count = queryset.values("reaction_type").annotate(count=Count("id"))
+        result = {}
+
+        for item in reactions_count:
+            reaction_type = item["reaction_type"].lower()
+            user_list = queryset.filter(
+                reaction_type=item["reaction_type"]
+            ).values_list("user__username", flat=True)
+
+            result[reaction_type] = {"count": item["count"], "user": list(user_list)}
+
+        # Ensure that each reaction type has a dictionary, even if it's empty
+        for reaction_type in ReactionChoices.values:
+            if reaction_type.lower() not in result:
+                result[reaction_type.lower()] = {"count": 0, "user": []}
+
+        return result
 
     def retrieve(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_object())
