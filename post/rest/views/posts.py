@@ -26,6 +26,7 @@ from post.rest.serializers.posts import (
 from core.permissions import (
     IsAuthenticated,
     IsAdminUser,
+    IsPostOwnerOrReadOnly,
     SAFE_METHODS,
 )
 
@@ -82,7 +83,7 @@ class UserPostUpdate(UpdateAPIView):
     """Views for user to update posts"""
 
     serializer_class = PostAddSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsPostOwnerOrReadOnly]
     lookup_field = "uid"
 
     def get_object(self):

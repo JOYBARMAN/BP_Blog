@@ -29,6 +29,7 @@ from core.permissions import (
 
 class PostReactionCount(RetrieveAPIView):
     serializer_class = PostReactionCountSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return PostReaction.objects.filter(post__uid=self.kwargs["uid"])
@@ -64,6 +65,7 @@ class PostReactionCount(RetrieveAPIView):
 
 class PostReactionCreate(CreateAPIView):
     serializer_class = PostReactionSerializer
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(

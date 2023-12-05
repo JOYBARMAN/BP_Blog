@@ -45,3 +45,18 @@ class IsActivatedUser(IsAuthenticated):
 
         # Check if the user is activated by OTP
         return request.user.is_activated()
+
+
+class IsPostOwnerOrReadOnly(BasePermission):
+    """
+    Allow access only to authenticated users in the 'get' method,
+    and only allow users to update their own posts.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # Allow access for safe methods (GET, HEAD, OPTIONS)
+        if request.method in SAFE_METHODS:
+            return True
+
+        # Deny access if the user is not the owner of the post
+        return obj.user == request.user
