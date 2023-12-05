@@ -66,7 +66,10 @@ class PostReactionCreate(CreateAPIView):
     serializer_class = PostReactionSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(
+            data=request.data,
+            context={"uid": kwargs.get("uid"), "user": self.request.user},
+        )
         serializer.is_valid(raise_exception=True)
         response_data = serializer.save()
         return Response(response_data, status=status.HTTP_200_OK)

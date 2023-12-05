@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 
+from post.models import Post
 from post_reaction.models import PostReaction
 
 
@@ -17,11 +18,13 @@ class PostReactionCountSerializer(serializers.Serializer):
 class PostReactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostReaction
-        fields = ["user", "post", "reaction_type"]
+        fields = [
+            "reaction_type",
+        ]
 
     def create(self, validated_data):
-        user = validated_data["user"]
-        post = validated_data["post"]
+        user = self.context.get("user")
+        post = Post.objects.get(uid=self.context.get("uid"))
         reaction_type = validated_data["reaction_type"]
 
         # Check if a reaction exists with the same user, post, and reaction_type
@@ -48,5 +51,7 @@ class PostReactionSerializer(serializers.ModelSerializer):
                 return {"msg": "Reaction Updated Successfully", "data": self.data}
             else:
                 # Create a new PostReaction
+                validated_data["post"] = post
+                validated_data["user"] = user
                 super().create(validated_data)
                 return {"msg": "Reaction Created Successfully", "data": self.data}
