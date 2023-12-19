@@ -3,7 +3,8 @@
 from rest_framework import serializers
 
 from post.models import Post
-from post_reaction.models import PostReaction
+from post_reaction.models import PostReaction, Comment
+from core.models import User
 
 
 class PostReactionCountSerializer(serializers.Serializer):
@@ -55,3 +56,24 @@ class PostReactionSerializer(serializers.ModelSerializer):
                 validated_data["user"] = user
                 super().create(validated_data)
                 return {"msg": "Reaction Created Successfully", "data": self.data}
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "uid", "username"]
+
+
+class PostCommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ["user", "comment"]
+
+    def create(self, validated_data):
+        # Create a new comment
+        validated_data["post"] = Post.objects.get(uid=self.context.get("uid"))
+        validated_data["user"] = self.context.get("user")
+        super().create(validated_data)
+        return {"msg": "Comment Created Successfully", "data": self.data}
