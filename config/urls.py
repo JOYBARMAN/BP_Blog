@@ -19,6 +19,8 @@ urlpatterns = [
     path("api/v1/posts", include("post.rest.urls.posts")),
     # post reaction urls
     path("api/v1/posts/<uuid:uid>/reaction", include("post_reaction.rest.urls.post_reaction")),
+    # post tag urls
+    path("api/v1/tags", include("tag.rest.urls.tag")),
     # silk url
     path("silk/", include("silk.urls", namespace="silk")),
 ]
