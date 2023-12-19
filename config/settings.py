@@ -37,6 +37,7 @@ PROJECT_APPS = [
     "sub_category.apps.SubCategoryConfig",
     "post.apps.PostConfig",
     "post_reaction.apps.PostReactionConfig",
+    "tag.apps.TagConfig",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",

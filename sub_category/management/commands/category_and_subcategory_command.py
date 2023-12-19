@@ -42,6 +42,6 @@ class Command(BaseCommand):
         # Bulk create SubCategory instances if creating Categories was successful
         SubCategory.objects.bulk_create(sub_category_to_create)
 
-        logger.info("Category and Sub-Category data created successfully.")
+        logger.info("Category and Sub-Category command run successfully.")
         logger.warning(f"\n\nAlready exists this category {exits_category}")
         logger.info(f"\n\nNewly added this category {new_category}")
