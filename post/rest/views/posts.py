@@ -50,6 +50,16 @@ class AdminPostList(ListAPIView):
         )
 
 
+class PostList(ListAPIView):
+    """Views for user to see all posts"""
+
+    serializer_class = PostListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return AdminPostList().get_queryset()
+
+
 class UserPostList(ListAPIView):
     """Views for user to see user posts"""
 

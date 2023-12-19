@@ -6,6 +6,7 @@ from post.models import Post, PostImages
 from category.models import Category
 from sub_category.models import SubCategory
 from category.rest.serializers.category import SubCategorySerializer
+from post_reaction.rest.serializers.post_reaction import UserSerializer
 
 from ckeditor.fields import RichTextField
 
@@ -78,6 +79,7 @@ class PostListSerializer(PostBaseSerializer):
     category = CategorySerializer(many=True)
     sub_category = SubCategorySerializer(many=True)
     images = PostImagesSerializer(many=True)
+    user = UserSerializer(read_only=True)
 
     class Meta(PostBaseSerializer.Meta):
         fields = PostBaseSerializer.Meta.fields + ["images"]
