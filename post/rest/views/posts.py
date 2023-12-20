@@ -16,6 +16,7 @@ from rest_framework import status
 from post.models import Post, PostImages
 from category.models import Category
 from sub_category.models import SubCategory
+from tag.models import Tag
 from post.rest.serializers.posts import (
     PostListSerializer,
     PostAddSerializer,
@@ -43,6 +44,7 @@ class AdminPostList(ListAPIView):
         return Post.objects.select_related("user").prefetch_related(
             Prefetch("category", queryset=Category().get_all_actives()),
             Prefetch("sub_category", queryset=SubCategory().get_all_actives()),
+            Prefetch("tag", queryset=Tag().get_all_actives()),
             Prefetch(
                 "images",
                 queryset=PostImages().get_all_actives(),

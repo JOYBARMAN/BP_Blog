@@ -5,6 +5,7 @@ from rest_framework import serializers
 from post.models import Post, PostImages
 from category.models import Category
 from sub_category.models import SubCategory
+from tag.models import Tag
 from category.rest.serializers.category import SubCategorySerializer
 from post_reaction.rest.serializers.post_reaction import UserSerializer
 
@@ -14,6 +15,12 @@ from ckeditor.fields import RichTextField
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
+        fields = ["id", "uid", "name"]
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
         fields = ["id", "uid", "name"]
 
 
@@ -66,6 +73,7 @@ class PostBaseSerializer(serializers.ModelSerializer):
             "category",
             "sub_category",
             "content",
+            "tag",
             "is_published",
             "status",
         ]
@@ -78,6 +86,7 @@ class PostBaseSerializer(serializers.ModelSerializer):
 class PostListSerializer(PostBaseSerializer):
     category = CategorySerializer(many=True)
     sub_category = SubCategorySerializer(many=True)
+    tag = TagSerializer(many=True)
     images = PostImagesSerializer(many=True)
     user = UserSerializer(read_only=True)
 
@@ -98,10 +107,11 @@ class PostAddSerializer(PostBaseSerializer):
         read_only_fields = PostBaseSerializer.Meta.read_only_fields + ["user"]
 
     def create(self, validated_data):
-        # Extract category , sub-category and uploaded images data from validated_data
+        # Extract category , sub-category, tag and uploaded images data from validated_data
         categories_data = validated_data.pop("category", [])
         sub_categories_data = validated_data.pop("sub_category", [])
         uploaded_images = validated_data.pop("uploaded_images", [])
+        tags_data = validated_data.pop("tag", [])
 
         # Create the Post instance with the authenticated user
         post_instance = Post.objects.create(
@@ -116,9 +126,10 @@ class PostAddSerializer(PostBaseSerializer):
         # Bulk insert all related objects at once
         PostImages.objects.bulk_create(post_images)
 
-        # Set the categories and sub-categories for the created post_instance
+        # Set the categories , sub-categories and tag for the created post_instance
         post_instance.category.set(categories_data)
         post_instance.sub_category.set(sub_categories_data)
+        post_instance.tag.set(tags_data)
 
         return post_instance
 

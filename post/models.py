@@ -6,6 +6,7 @@ from common.models import BaseModelWithUID
 from core.models import User
 from category.models import Category
 from sub_category.models import SubCategory
+from tag.models import Tag
 from .utils import custom_upload_to
 
 from ckeditor.fields import RichTextField
@@ -24,6 +25,9 @@ class Post(BaseModelWithUID):
         SubCategory, related_name="post_subcategory", blank=True
     )
     content = RichTextField()
+    tag = models.ManyToManyField(
+        Tag, related_name="post_tag", blank=True
+    )
     is_published = models.BooleanField(default=True)
 
     class Meta:
