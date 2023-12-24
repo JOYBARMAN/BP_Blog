@@ -19,6 +19,7 @@ class Profile(BaseModelWithUID):
     gender = models.CharField(
         max_length=10, choices=UserGender.choices, null=True, blank=True
     )
+    date_of_birth = models.DateField(null=True, blank=True)
     blood_group = models.CharField(
         max_length=10, choices=BloodGroups.choices, null=True, blank=True
     )
@@ -37,7 +38,6 @@ class Profile(BaseModelWithUID):
     instagram_link = models.CharField(max_length=255, null=True, blank=True)
     twitter_link = models.CharField(max_length=255, null=True, blank=True)
     linkedin_link = models.CharField(max_length=255, null=True, blank=True)
-
 
     def __str__(self):
         return f"{self.first_name}  {self.last_name}"
