@@ -46,6 +46,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "corsheaders",
     "ckeditor",
+    "drf_spectacular",
 ]
 
 if ENABLE_SILK:
@@ -104,11 +105,12 @@ DATABASES = {
 
 
 # JWT configuration
-# REST_FRAMEWORK = {
-#     "DEFAULT_AUTHENTICATION_CLASSES": (
-#         "rest_framework_simplejwt.authentication.JWTAuthentication",
-#     )
-# }
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
 
 
 # Password validation
@@ -144,10 +146,10 @@ USE_TZ = True
 # CKEditor settings
 CKEDITOR_UPLOAD_PATH = "ckeditor/"
 CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': 800,
+    "default": {
+        "toolbar": "full",
+        "height": 300,
+        "width": 800,
     },
 }
 
@@ -218,4 +220,12 @@ LOGGING = {
         "handlers": ["console"],
         "level": "DEBUG",
     },
+}
+
+# Spectacular settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Social Media App Api",
+    "DESCRIPTION": "This API powers a cutting-edge Social Media App, enabling users to connect, share, and interact in a dynamic digital space. With features like user authentication, post creation, commenting, and more, our API provides a seamless experience for developers building social media applications. Version 1.0.0 marks the beginning of an exciting journey, with plans for continuous improvement and expansion.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
